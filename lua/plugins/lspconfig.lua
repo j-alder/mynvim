@@ -3,33 +3,31 @@ return {
     "neovim/nvim-lspconfig",
     dependencies = { "saghen/blink.cmp" },
     config = function()
-      local capabilities = require("blink.cmp").get_lsp_capabilities()
-      
-      -- TypeScript language server
-      vim.lsp.config("tsserver", {
-        capabilities = capabilities
-      })
 
-      local haskell_root_markers = { "cabal.project", "stack.yaml", "package.yaml", "hie.yaml", ".git" }
+      local capabilities = require("blink.cmp").get_lsp_capabilities()
 
       local function get_root(bufnr)
         local fname = vim.api.nvim_buf_get_name(bufnr)
         if fname == "" then
           return vim.loop.cwd()
         end
-        return vim.fs.root(fname, haskell_root_markers) or vim.fs.dirname(fname)
+        return vim.fs.root(
+          fname,
+          { "cabal.project", "stack.yaml", "package.yaml", "hie.yaml", ".git" }
+        ) or vim.fs.dirname(fname)
       end
 
+      -- start static-ls or HLS depending on root directory and executable availability
       local function start_haskell_lsp(bufnr)
-        -- If a client is already attached, don't start another.
+        -- if a client is already attached, don't start another
         for _, client in ipairs(vim.lsp.get_clients({ bufnr = bufnr })) do
           if client.name == "static_ls" or client.name == "hls" then
             return
           end
         end
 
-        local root_dir = get_root(bufnr)
         -- only use static-ls when in specific directories
+        local root_dir = get_root(bufnr)
         local use_static = root_dir:find("mercury-web-backend", 1, true) ~= nil
 
         if vim.fn.executable("static-ls") == 1 and use_static then
@@ -65,17 +63,24 @@ return {
         end
       end
 
+      -- TypeScript language server
+      vim.lsp.config("tsserver", {
+        capabilities = capabilities
+      })
+
+      -- HLS or static-ls
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "haskell", "lhaskell" },
         callback = function(args)
           start_haskell_lsp(args.buf)
         end,
       })
-
+      
+      -- attach go to definition/declaration mappings once LSP is attached
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function()
-          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
-          vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
         end
       })
     end,
