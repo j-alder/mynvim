@@ -71,6 +71,13 @@ return {
           start_haskell_lsp(args.buf)
         end,
       })
+
+      vim.api.nvim_create_autocmd("LspAttach", {
+        callback = function()
+          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, {})
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, {})
+        end
+      })
     end,
   },
 }
