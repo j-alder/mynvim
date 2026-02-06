@@ -63,8 +63,13 @@ return {
         end
       end
 
+      vim.lsp.enable('tsserver')
+
       -- TypeScript language server
       vim.lsp.config("tsserver", {
+        cmd = {'typescript-language-server', '--stdio'},
+        filetypes = { 'typescript', 'javascript' },
+        root_dir = vim.fs.root(0, {'package.json', '.git'}),
         capabilities = capabilities
       })
 
