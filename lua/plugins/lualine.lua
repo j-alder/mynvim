@@ -1,10 +1,5 @@
 return {
-  "nvim-lualine/lualine.nvim",
-  event = "VeryLazy",
-  --opts = function()
-  --  return {
-  --    -- add custom lualine config here
-  --  }
-  --end,
+  'nvim-lualine/lualine.nvim',
+  dependencies = { 'nvim-tree/nvim-web-devicons' }
 }
 
