@@ -37,10 +37,11 @@ require('lualine').setup {
     lualine_c = {
       {
         'filename',
-        path = 4
+        path = 1
       }
     },
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    -- lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_x = {},
     lualine_y = {'progress'},
     lualine_z = {'location'}
   },
@@ -48,7 +49,7 @@ require('lualine').setup {
     lualine_a = {},
     lualine_b = {},
     lualine_c = {'filename'},
-    lualine_x = {'location'},
+    -- lualine_x = {'location'},
     lualine_y = {},
     lualine_z = {}
   },
