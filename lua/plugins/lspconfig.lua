@@ -6,6 +6,10 @@ return {
 
       local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+      --------------------
+      -- Haskell config --
+      --------------------
+      
       local function get_root(bufnr)
         local fname = vim.api.nvim_buf_get_name(bufnr)
         if fname == "" then
@@ -16,7 +20,7 @@ return {
           { "cabal.project", "stack.yaml", "package.yaml", "hie.yaml", ".git" }
         ) or vim.fs.dirname(fname)
       end
-
+    
       -- start static-ls or HLS depending on root directory and executable availability
       local function start_haskell_lsp(bufnr)
         -- if a client is already attached, don't start another
@@ -36,6 +40,9 @@ return {
             cmd = { "static-ls" },
             root_dir = root_dir,
             capabilities = capabilities,
+            on_init = function(client)
+              client.server_capabilities.semanticTokensProvider = nil
+            end,
           }, { bufnr = bufnr })
         else
           local hls_cmd
@@ -63,25 +70,31 @@ return {
         end
       end
 
-      vim.lsp.enable('tsserver')
-
-      -- TypeScript language server
-      vim.lsp.config("tsserver", {
-        cmd = {'typescript-language-server', '--stdio'},
-        filetypes = { 'typescript', 'javascript', 'typescriptreact' },
-        root_dir = vim.fs.root(0, {'package.json', '.git'}),
-        capabilities = capabilities
-      })
-
-      -- HLS or static-ls
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "haskell", "lhaskell" },
         callback = function(args)
           start_haskell_lsp(args.buf)
         end,
       })
+
+      -----------------------
+      -- Typescript config --
+      -----------------------
+
+      vim.lsp.enable('tsserver')
+
+      vim.lsp.config("tsserver", {
+        cmd = {'typescript-language-server', '--stdio'},
+        filetypes = { 'typescript', 'javascript', 'typescriptreact' },
+        root_dir = vim.fs.root(0, {'package.json', '.git'}),
+        capabilities = capabilities
+      })
       
-      -- attach go to definition/declaration mappings once LSP is attached
+      --------------------
+      -- General config --
+      --------------------
+      
+      -- set goto definition/declaration keymaps once LSP is attached
       vim.api.nvim_create_autocmd("LspAttach", {
         callback = function()
           vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
