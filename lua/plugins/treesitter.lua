@@ -1,8 +1,11 @@
 return {
-  'nvim-treesitter/nvim-treesitter',
+  'neovim-treesitter/nvim-treesitter',
   branch = 'main',
   version = false,
   lazy = false,
+  dependencies = {
+    "neovim-treesitter/treesitter-parser-registry"
+  },
   opts = {
     highlight = { enable = true },
     ensure_installed = {
