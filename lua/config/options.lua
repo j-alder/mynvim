@@ -17,7 +17,5 @@ vim.opt.scrolloff = 8         -- number of rows to place before or after the cur
 
 vim.g.mapleader = ' '         -- <leader> character before commands
 
-vim.cmd[[colorscheme catppuccin]]
-
 vim.cmd[[set completeopt+=menuone,noselect,popup]] -- completeion options, see `:h completeopt`
 
