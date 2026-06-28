@@ -14,8 +14,13 @@ vim.opt.colorcolumn = '80'    -- column to highlight for line width
 vim.opt.updatetime = 50       -- (ms) time between input end and plugin call
 vim.opt.termguicolors = true  -- enable 24-bit true color support
 vim.opt.scrolloff = 8         -- number of rows to place before or after the cursor when scrolling
+vim.opt.spell = true          -- turn on spell checking
+vim.opt.spelllang = { 'en' }  -- set spell check language
+vim.opt.spellfile =           -- set spellfile location
+  vim.fn.expand('~/.config/nvim/spell/en.utf-8.add')
 
 vim.g.mapleader = ' '         -- <leader> character before commands
 
-vim.cmd[[set completeopt+=menuone,noselect,popup]] -- completeion options, see `:h completeopt`
-
+vim.cmd( -- completion options, see `:h completeopt`
+  'set completeopt+=menuone,noselect,popup'
+)
